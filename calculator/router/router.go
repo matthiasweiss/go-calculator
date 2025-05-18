@@ -38,8 +38,24 @@ func New() *Router {
 	return &Router{}
 }
 
+func (r *Router) Get(path string, handler func(http.ResponseWriter, *http.Request)) {
+	r.handle(Get, path, handler)
+}
+
 func (r *Router) Post(path string, handler func(http.ResponseWriter, *http.Request)) {
 	r.handle(Post, path, handler)
+}
+
+func (r *Router) Put(path string, handler func(http.ResponseWriter, *http.Request)) {
+	r.handle(Put, path, handler)
+}
+
+func (r *Router) Patch(path string, handler func(http.ResponseWriter, *http.Request)) {
+	r.handle(Patch, path, handler)
+}
+
+func (r *Router) Delete(path string, handler func(http.ResponseWriter, *http.Request)) {
+	r.handle(Delete, path, handler)
 }
 
 func (r *Router) handle(method HttpMethod, path string, handler func(http.ResponseWriter, *http.Request)) {
