@@ -1,6 +1,7 @@
 package main
 
 import (
+	"calculator/router"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -19,7 +20,9 @@ type Result struct {
 Calculator API, spec taken from https://github.com/dreamsofcode-io/goprojects/blob/main/02-backend-api/README.md
 */
 func main() {
-	http.HandleFunc("POST /add", func(w http.ResponseWriter, r *http.Request) {
+	router := router.New()
+
+	router.Post("/add", func(w http.ResponseWriter, r *http.Request) {
 		var calculation Calculation
 		json.NewDecoder(r.Body).Decode(&calculation)
 
@@ -30,7 +33,7 @@ func main() {
 		json.NewEncoder(w).Encode(result)
 	})
 
-	http.HandleFunc("POST /subtract", func(w http.ResponseWriter, r *http.Request) {
+	router.Post("/subtract", func(w http.ResponseWriter, r *http.Request) {
 		var calculation Calculation
 		json.NewDecoder(r.Body).Decode(&calculation)
 
@@ -41,7 +44,7 @@ func main() {
 		json.NewEncoder(w).Encode(result)
 	})
 
-	http.HandleFunc("POST /multiply", func(w http.ResponseWriter, r *http.Request) {
+	router.Post("/multiply", func(w http.ResponseWriter, r *http.Request) {
 		var calculation Calculation
 		json.NewDecoder(r.Body).Decode(&calculation)
 
@@ -52,7 +55,7 @@ func main() {
 		json.NewEncoder(w).Encode(result)
 	})
 
-	http.HandleFunc("POST /divide", func(w http.ResponseWriter, r *http.Request) {
+	router.Post("/divide", func(w http.ResponseWriter, r *http.Request) {
 		var calculation Calculation
 		json.NewDecoder(r.Body).Decode(&calculation)
 
@@ -63,7 +66,7 @@ func main() {
 		json.NewEncoder(w).Encode(result)
 	})
 
-	http.HandleFunc("POST /sum", func(w http.ResponseWriter, r *http.Request) {
+	router.Post("/sum", func(w http.ResponseWriter, r *http.Request) {
 		type SumCalculation struct {
 			Items []float64 `json:"items"`
 		}
