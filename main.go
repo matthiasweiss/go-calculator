@@ -15,6 +15,9 @@ type Result struct {
 	Result float64 `json:"result"`
 }
 
+/*
+Calculator API, spec taken from https://github.com/dreamsofcode-io/goprojects/blob/main/02-backend-api/README.md
+*/
 func main() {
 	http.HandleFunc("POST /add", func(w http.ResponseWriter, r *http.Request) {
 		var calculation Calculation
