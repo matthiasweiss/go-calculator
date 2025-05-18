@@ -6,25 +6,86 @@ import (
 	"net/http"
 )
 
+type Calculation struct {
+	Number1 float64 `json:"number1"`
+	Number2 float64 `json:"number2"`
+}
+
 type Result struct {
-	Result int `json:"result"`
+	Result float64 `json:"result"`
 }
 
 func main() {
-	http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("POST /add", func(w http.ResponseWriter, r *http.Request) {
+		var calculation Calculation
+		json.NewDecoder(r.Body).Decode(&calculation)
+
 		result := Result{
-			Result: 12,
+			Result: calculation.Number1 + calculation.Number2,
 		}
 
 		json.NewEncoder(w).Encode(result)
 	})
 
-	http.HandleFunc("POST /decode", func(w http.ResponseWriter, r *http.Request) {
-		var result Result
-		json.NewDecoder(r.Body).Decode(&result)
+	http.HandleFunc("POST /subtract", func(w http.ResponseWriter, r *http.Request) {
+		var calculation Calculation
+		json.NewDecoder(r.Body).Decode(&calculation)
 
-		fmt.Fprintf(w, "Result is: %d", result.Result)
+		result := Result{
+			Result: calculation.Number1 - calculation.Number2,
+		}
+
+		json.NewEncoder(w).Encode(result)
+	})
+
+	http.HandleFunc("POST /multiply", func(w http.ResponseWriter, r *http.Request) {
+		var calculation Calculation
+		json.NewDecoder(r.Body).Decode(&calculation)
+
+		result := Result{
+			Result: calculation.Number1 * calculation.Number2,
+		}
+
+		json.NewEncoder(w).Encode(result)
+	})
+
+	http.HandleFunc("POST /divide", func(w http.ResponseWriter, r *http.Request) {
+		var calculation Calculation
+		json.NewDecoder(r.Body).Decode(&calculation)
+
+		result := Result{
+			Result: calculation.Number1 / calculation.Number2,
+		}
+
+		json.NewEncoder(w).Encode(result)
+	})
+
+	http.HandleFunc("POST /sum", func(w http.ResponseWriter, r *http.Request) {
+		type SumCalculation struct {
+			Items []float64 `json:"items"`
+		}
+		var calculation SumCalculation
+		json.NewDecoder(r.Body).Decode(&calculation)
+
+		fmt.Println(calculation.Items)
+
+		result := Result{
+			Result: sum(calculation.Items),
+		}
+
+		json.NewEncoder(w).Encode(result)
 	})
 
 	http.ListenAndServe(":8080", nil)
+}
+
+func sum(items []float64) float64 {
+	sum := 0.0
+
+	for _, item := range items {
+		fmt.Println(item)
+		sum += item
+	}
+
+	return sum
 }
