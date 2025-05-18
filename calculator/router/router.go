@@ -69,7 +69,6 @@ func (r *Router) handle(method HttpMethod, path string, handler func(http.Respon
 }
 
 func prefix(method HttpMethod) (string, error) {
-
 	if val, ok := httpMethodNames[method]; ok {
 		return val, nil
 	}
