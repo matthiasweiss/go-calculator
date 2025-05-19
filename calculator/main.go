@@ -3,6 +3,7 @@ package main
 import (
 	"calculator/handlers"
 	"calculator/router"
+	"fmt"
 	"net/http"
 )
 
@@ -18,5 +19,6 @@ func main() {
 	router.Post("/divide", handlers.Divide)
 	router.Post("/sum", handlers.Sum)
 
+	fmt.Println("Server running on localhost:8080")
 	http.ListenAndServe(":8080", router)
 }
