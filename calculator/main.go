@@ -18,5 +18,5 @@ func main() {
 	router.Post("/divide", handlers.Divide)
 	router.Post("/sum", handlers.Sum)
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8080", router)
 }

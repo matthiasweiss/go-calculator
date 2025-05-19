@@ -6,7 +6,9 @@ import (
 	"net/http"
 )
 
-type Router struct{}
+type Router struct {
+	routes map[string]func(http.ResponseWriter, *http.Request)
+}
 
 type HttpMethod int
 
@@ -35,7 +37,9 @@ func (method HttpMethod) String() string {
 }
 
 func New() *Router {
-	return &Router{}
+	return &Router{
+		routes: make(map[string]func(http.ResponseWriter, *http.Request)),
+	}
 }
 
 func (r *Router) Get(path string, handler func(http.ResponseWriter, *http.Request)) {
@@ -59,13 +63,15 @@ func (r *Router) Delete(path string, handler func(http.ResponseWriter, *http.Req
 }
 
 func (r *Router) handle(method HttpMethod, path string, handler func(http.ResponseWriter, *http.Request)) {
-	prefix, err := prefix(method)
+	methodPrefix, err := prefix(method)
 
 	if err != nil {
 		log.Fatalf("Invalid method: %s", method)
+		return
 	}
 
-	http.HandleFunc(fmt.Sprintf("%s %s", prefix, path), handler)
+	key := fmt.Sprintf("%s %s", methodPrefix, path)
+	r.routes[key] = handler
 }
 
 func prefix(method HttpMethod) (string, error) {
@@ -74,4 +80,15 @@ func prefix(method HttpMethod) (string, error) {
 	}
 
 	return "", fmt.Errorf("unmapped HTTP method: %d", method)
+}
+
+func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	key := fmt.Sprintf("%s %s", req.Method, req.URL.Path)
+
+	if handler, ok := r.routes[key]; ok {
+		handler(w, req)
+		return
+	}
+
+	http.NotFound(w, req)
 }
