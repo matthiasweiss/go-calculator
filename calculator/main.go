@@ -13,6 +13,7 @@ Calculator API, spec taken from https://github.com/dreamsofcode-io/goprojects/bl
 func main() {
 	router := router.New()
 
+	router.Get("/", handlers.Hello)
 	router.Post("/add", handlers.Add)
 	router.Post("/subtract", handlers.Subtract)
 	router.Post("/multiply", handlers.Multiply)
