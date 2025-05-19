@@ -70,8 +70,8 @@ func (r *Router) handle(method HttpMethod, path string, handler func(http.Respon
 		return
 	}
 
-	key := fmt.Sprintf("%s %s", methodPrefix, path)
-	r.routes[key] = handler
+	methodAndPath := fmt.Sprintf("%s %s", methodPrefix, path)
+	http.HandleFunc(methodAndPath, handler)
 }
 
 func prefix(method HttpMethod) (string, error) {
@@ -82,13 +82,14 @@ func prefix(method HttpMethod) (string, error) {
 	return "", fmt.Errorf("unmapped HTTP method: %d", method)
 }
 
-func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	key := fmt.Sprintf("%s %s", req.Method, req.URL.Path)
+// keep in here for now, maybe I'll implement this completely
+// func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+// 	key := fmt.Sprintf("%s %s", req.Method, req.URL.Path)
 
-	if handler, ok := r.routes[key]; ok {
-		handler(w, req)
-		return
-	}
+// 	if handler, ok := r.routes[key]; ok {
+// 		handler(w, req)
+// 		return
+// 	}
 
-	http.NotFound(w, req)
-}
+// 	http.NotFound(w, req)
+// }

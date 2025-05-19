@@ -14,6 +14,7 @@ func main() {
 	router := router.New()
 
 	router.Get("/", handlers.Hello)
+	router.Get("/hello/{param}", handlers.Wildcard)
 	router.Post("/add", handlers.Add)
 	router.Post("/subtract", handlers.Subtract)
 	router.Post("/multiply", handlers.Multiply)
@@ -21,5 +22,8 @@ func main() {
 	router.Post("/sum", handlers.Sum)
 
 	fmt.Println("Server running on localhost:8080")
-	http.ListenAndServe(":8080", router)
+	http.ListenAndServe(":8080", nil)
+
+	// keep in here for now, maybe I'll implement this completely
+	// http.ListenAndServe(":8080", router)
 }
