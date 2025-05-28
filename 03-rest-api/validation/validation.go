@@ -25,6 +25,8 @@ func NewErrorResponse(err error) ErrorResponse {
 	errors := make(map[string]string)
 	message := "Validation failed for one or more fields."
 
+	// The dot operator is used for type assertion, ok is true if the dynamic type
+	// of err cam be assigned to the given error, in this case validator.ValidationErrors
 	if validationErrors, ok := err.(validator.ValidationErrors); ok {
 		for _, fieldErr := range validationErrors {
 			fieldName := strings.ToLower(fieldErr.Field())
@@ -41,7 +43,7 @@ func NewErrorResponse(err error) ErrorResponse {
 			errors[fieldName] = fmt.Sprintf("%s %s", fieldName, msg)
 		}
 	} else {
-		errors["general"] = "An unexpected validation error occurred."
+		errors["unknown"] = "An unexpected validation error occurred."
 		message = "An unexpected error occurred during validation."
 	}
 
