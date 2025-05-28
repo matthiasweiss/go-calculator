@@ -1,11 +1,16 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand/v2"
+	"time"
+)
 
 func main() {
 	numbers := [][]int{
-		{0, 1, 2, 3},
-		{4, 5, 6, 7},
+		{0, 1, 2},
+		{4, 5, 6},
+		{7, 8, 9},
 	}
 
 	c := make(chan int)
@@ -27,6 +32,9 @@ func sum(c chan<- int, numbers []int) {
 	for _, v := range numbers {
 		sum += v
 	}
+
+	// simulate heavy calculation
+	time.Sleep(time.Duration(rand.IntN(2)) * time.Second)
 
 	c <- sum
 }
