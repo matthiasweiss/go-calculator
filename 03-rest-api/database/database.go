@@ -3,7 +3,7 @@ package database
 import "rest-api/data"
 
 type Post struct {
-	Id int
+	Id int `json:"id"`
 	data.PostData
 }
 

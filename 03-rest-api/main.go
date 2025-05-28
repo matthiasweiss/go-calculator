@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"rest-api/data"
 	"rest-api/database"
 	"rest-api/validation"
 
@@ -28,7 +29,7 @@ func main() {
 	})
 
 	r.HandleFunc("POST /posts", func(w http.ResponseWriter, r *http.Request) {
-		var postData database.PostData
+		var postData data.PostData
 		json.NewDecoder(r.Body).Decode(&postData)
 		w.Header().Set("Content-Type", "application/json")
 
