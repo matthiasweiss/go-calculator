@@ -84,13 +84,6 @@ func (h *PostHandlers) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	post, err := h.Database.Show(id)
-
-	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-
 	err = h.Database.Delete(post)
 
 	if err != nil {

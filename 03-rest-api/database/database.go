@@ -42,12 +42,11 @@ func (db *Database) Create(data data.PostData) Post {
 	return newPost
 }
 
-func (db *Database) Delete(post Post) error {
-	// todo: filter out post with current id
+func (db *Database) Delete(id int) error {
 	filtered := []Post{}
 
 	for _, v := range db.posts {
-		if v.Id != post.Id {
+		if v.Id != id {
 			filtered = append(filtered, v)
 		}
 	}
