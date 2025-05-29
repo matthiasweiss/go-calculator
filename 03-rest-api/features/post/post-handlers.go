@@ -3,7 +3,7 @@ package post
 import (
 	"encoding/json"
 	"net/http"
-	"rest-api/validation"
+	"rest-api/common/validation"
 	"strconv"
 
 	"github.com/go-playground/validator/v10"

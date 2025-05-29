@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	"rest-api/middleware"
+	"rest-api/common/middleware"
 	"rest-api/post"
 )
 
