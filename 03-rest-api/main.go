@@ -7,7 +7,6 @@ import (
 )
 
 func main() {
-
 	r := http.NewServeMux()
 
 	routers := map[string]http.Handler{
@@ -18,6 +17,12 @@ func main() {
 		r.Handle(prefix, http.StripPrefix(prefix, subRouter))
 	}
 
-	chain := middleware.NewMiddlewareChain(middleware.Log, middleware.Json)
-	http.ListenAndServe(":3000", chain.Apply(r))
+	middlewares := []middleware.Middleware{
+		middleware.LogMiddleware,
+		middleware.JsonMiddleware,
+	}
+
+	middlewareChain := middleware.NewMiddlewareChain(middlewares...)
+
+	http.ListenAndServe(":3000", middlewareChain.Apply(r))
 }
