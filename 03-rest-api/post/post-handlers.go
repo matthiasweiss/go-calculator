@@ -1,9 +1,8 @@
-package handlers
+package post
 
 import (
 	"encoding/json"
 	"net/http"
-	"rest-api/data"
 	"rest-api/database"
 	"rest-api/validation"
 	"strconv"
@@ -28,7 +27,7 @@ func (h *PostHandlers) Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *PostHandlers) Create(w http.ResponseWriter, r *http.Request) {
-	var postData data.PostData
+	var postData Post
 	json.NewDecoder(r.Body).Decode(&postData)
 
 	err := h.Validator.Struct(postData)
@@ -84,7 +83,7 @@ func (h *PostHandlers) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.Database.Delete(post.id)
+	err = h.Database.Delete(id)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

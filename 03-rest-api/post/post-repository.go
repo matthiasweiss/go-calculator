@@ -1,13 +1,12 @@
-package database
+package post
 
 import (
 	"fmt"
-	"rest-api/data"
 )
 
 type Post struct {
 	Id int `json:"id"`
-	data.PostData
+	PostData
 }
 
 type Database struct {
@@ -29,7 +28,7 @@ func (db *Database) Show(id int) (Post, error) {
 	return Post{}, fmt.Errorf("No post with id %d found", id)
 }
 
-func (db *Database) Create(data data.PostData) Post {
+func (db *Database) Create(data PostData) Post {
 	newPost := Post{
 		Id:       db.sequenceNumber,
 		PostData: data,
@@ -56,7 +55,7 @@ func (db *Database) Delete(id int) error {
 	return nil
 }
 
-func NewDatabase() *Database {
+func NewPostRepository() *Database {
 	return &Database{
 		sequenceNumber: 1,
 		posts:          []Post{},
