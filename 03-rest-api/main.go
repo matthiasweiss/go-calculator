@@ -10,11 +10,11 @@ func main() {
 
 	r := http.NewServeMux()
 
-	featureRouters := map[string]http.Handler{
+	routers := map[string]http.Handler{
 		"/posts": post.NewPostRouter(),
 	}
 
-	for prefix, subRouter := range featureRouters {
+	for prefix, subRouter := range routers {
 		r.Handle(prefix, http.StripPrefix(prefix, subRouter))
 	}
 
