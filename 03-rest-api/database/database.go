@@ -1,6 +1,9 @@
 package database
 
-import "rest-api/data"
+import (
+	"fmt"
+	"rest-api/data"
+)
 
 type Post struct {
 	Id int `json:"id"`
@@ -12,8 +15,18 @@ type Database struct {
 	posts          []Post
 }
 
-func (db *Database) List() []Post {
+func (db *Database) Index() []Post {
 	return db.posts
+}
+
+func (db *Database) Show(id int) (Post, error) {
+	for _, v := range db.posts {
+		if v.Id == id {
+			return v, nil
+		}
+	}
+
+	return Post{}, fmt.Errorf("No post with id %d found", id)
 }
 
 func (db *Database) Create(data data.PostData) Post {
