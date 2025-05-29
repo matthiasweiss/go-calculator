@@ -42,6 +42,21 @@ func (db *Database) Create(data data.PostData) Post {
 	return newPost
 }
 
+func (db *Database) Delete(post Post) error {
+	// todo: filter out post with current id
+	filtered := []Post{}
+
+	for _, v := range db.posts {
+		if v.Id != post.Id {
+			filtered = append(filtered, v)
+		}
+	}
+
+	db.posts = filtered
+
+	return nil
+}
+
 func NewDatabase() *Database {
 	return &Database{
 		sequenceNumber: 1,
