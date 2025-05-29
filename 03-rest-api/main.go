@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 	"rest-api/common/middleware"
-	"rest-api/post"
+	"rest-api/features/post"
 )
 
 func main() {
