@@ -22,7 +22,7 @@ func main() {
 		middleware.JsonMiddleware,
 	}
 
-	middlewareChain := middleware.NewMiddlewareChain(middlewares...)
+	middlewareChain := middleware.NewChain(middlewares...)
 
 	http.ListenAndServe(":3000", middlewareChain.Apply(r))
 }

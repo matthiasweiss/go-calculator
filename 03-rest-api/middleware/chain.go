@@ -6,17 +6,17 @@ import (
 
 type Middleware func(http.Handler) http.Handler
 
-type MiddlewareChain struct {
+type Chain struct {
 	middlewares []Middleware
 }
 
-func NewMiddlewareChain(m ...Middleware) *MiddlewareChain {
-	return &MiddlewareChain{
+func NewChain(m ...Middleware) *Chain {
+	return &Chain{
 		middlewares: m,
 	}
 }
 
-func (mc *MiddlewareChain) Apply(handler http.Handler) http.Handler {
+func (mc *Chain) Apply(handler http.Handler) http.Handler {
 	for i := len(mc.middlewares) - 1; i >= 0; i-- {
 		handler = mc.middlewares[i](handler)
 	}
@@ -24,6 +24,6 @@ func (mc *MiddlewareChain) Apply(handler http.Handler) http.Handler {
 	return handler
 }
 
-func (mc *MiddlewareChain) Handle(handlerFunc http.HandlerFunc) http.Handler {
+func (mc *Chain) Handle(handlerFunc http.HandlerFunc) http.Handler {
 	return mc.Apply(handlerFunc)
 }
