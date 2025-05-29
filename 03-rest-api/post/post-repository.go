@@ -9,16 +9,16 @@ type Post struct {
 	PostData
 }
 
-type Database struct {
+type PostRepository struct {
 	sequenceNumber int
 	posts          []Post
 }
 
-func (db *Database) Index() []Post {
+func (db *PostRepository) Index() []Post {
 	return db.posts
 }
 
-func (db *Database) Show(id int) (Post, error) {
+func (db *PostRepository) Show(id int) (Post, error) {
 	for _, v := range db.posts {
 		if v.Id == id {
 			return v, nil
@@ -28,7 +28,7 @@ func (db *Database) Show(id int) (Post, error) {
 	return Post{}, fmt.Errorf("No post with id %d found", id)
 }
 
-func (db *Database) Create(data PostData) Post {
+func (db *PostRepository) Create(data PostData) Post {
 	newPost := Post{
 		Id:       db.sequenceNumber,
 		PostData: data,
@@ -41,7 +41,7 @@ func (db *Database) Create(data PostData) Post {
 	return newPost
 }
 
-func (db *Database) Delete(id int) error {
+func (db *PostRepository) Delete(id int) error {
 	filtered := []Post{}
 
 	for _, v := range db.posts {
@@ -55,8 +55,8 @@ func (db *Database) Delete(id int) error {
 	return nil
 }
 
-func NewPostRepository() *Database {
-	return &Database{
+func NewPostRepository() *PostRepository {
+	return &PostRepository{
 		sequenceNumber: 1,
 		posts:          []Post{},
 	}

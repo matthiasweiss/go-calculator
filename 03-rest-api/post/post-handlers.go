@@ -3,7 +3,6 @@ package post
 import (
 	"encoding/json"
 	"net/http"
-	"rest-api/database"
 	"rest-api/validation"
 	"strconv"
 
@@ -11,12 +10,12 @@ import (
 )
 
 type PostHandlers struct {
-	Database  *database.Database
-	Validator *validator.Validate
+	Repository *PostRepository
+	Validator  *validator.Validate
 }
 
 func (h *PostHandlers) Index(w http.ResponseWriter, r *http.Request) {
-	posts := h.Database.Index()
+	posts := h.Repository.Index()
 
 	err := json.NewEncoder(w).Encode(posts)
 
@@ -27,7 +26,7 @@ func (h *PostHandlers) Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *PostHandlers) Create(w http.ResponseWriter, r *http.Request) {
-	var postData Post
+	var postData PostData
 	json.NewDecoder(r.Body).Decode(&postData)
 
 	err := h.Validator.Struct(postData)
@@ -40,7 +39,7 @@ func (h *PostHandlers) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	post := h.Database.Create(postData)
+	post := h.Repository.Create(postData)
 
 	err = json.NewEncoder(w).Encode(post)
 
@@ -59,7 +58,7 @@ func (h *PostHandlers) Show(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	post, err := h.Database.Show(id)
+	post, err := h.Repository.Show(id)
 
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
@@ -83,7 +82,7 @@ func (h *PostHandlers) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.Database.Delete(id)
+	err = h.Repository.Delete(id)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
