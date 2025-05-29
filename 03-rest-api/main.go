@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"rest-api/data"
 	"rest-api/database"
+	"rest-api/middleware"
 	"rest-api/validation"
 	"strconv"
 
@@ -15,7 +16,6 @@ func main() {
 	r := http.NewServeMux()
 
 	db := database.NewDatabase()
-
 	v := validator.New(validator.WithRequiredStructEnabled())
 
 	r.HandleFunc("GET /posts", func(w http.ResponseWriter, r *http.Request) {
@@ -80,5 +80,7 @@ func main() {
 		}
 	})
 
-	http.ListenAndServe(":3000", r)
+	chain := middleware.NewMiddlewareChain(middleware.Log, middleware.Json)
+
+	http.ListenAndServe(":3000", chain.Apply(r))
 }
