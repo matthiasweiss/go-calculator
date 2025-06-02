@@ -12,11 +12,7 @@ type secret struct {
 func RegisterRoutes(r *http.ServeMux) {
 	handlers := SecretHandlers{}
 
-	middlewares := []middleware.Middleware{
-		middleware.JwtMiddleware,
-	}
-
-	chain := middleware.NewChain(middlewares...)
+	chain := middleware.NewChain(middleware.JwtMiddleware)
 
 	r.HandleFunc("GET /secrets", chain.Handle(handlers.Index))
 	r.HandleFunc("GET /secrets/{wildcard}", chain.Handle(handlers.Show))
