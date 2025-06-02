@@ -4,18 +4,11 @@ import (
 	"net/http"
 	"rest-api/common/middleware"
 	"rest-api/features/post"
+	"rest-api/features/secret"
 )
 
 func main() {
 	r := http.NewServeMux()
-
-	routers := map[string]http.Handler{
-		"/posts": post.NewPostRouter(),
-	}
-
-	for prefix, subRouter := range routers {
-		r.Handle(prefix, http.StripPrefix(prefix, subRouter))
-	}
 
 	middlewares := []middleware.Middleware{
 		middleware.LogMiddleware,
@@ -23,6 +16,9 @@ func main() {
 	}
 
 	middlewareChain := middleware.NewChain(middlewares...)
+
+	post.RegisterRoutes(r)
+	secret.RegisterRoutes(r)
 
 	http.ListenAndServe(":3000", middlewareChain.Apply(r))
 }
