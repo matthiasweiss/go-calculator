@@ -24,6 +24,8 @@ func (mc *Chain) Apply(handler http.Handler) http.Handler {
 	return handler
 }
 
-func (mc *Chain) Handle(handlerFunc http.HandlerFunc) http.Handler {
-	return mc.Apply(handlerFunc)
+func (mc *Chain) Handle(handlerFunc http.HandlerFunc) http.HandlerFunc {
+	wrapped := mc.Apply(handlerFunc)
+
+	return wrapped.ServeHTTP
 }

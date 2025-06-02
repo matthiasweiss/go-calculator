@@ -15,10 +15,10 @@ func main() {
 		middleware.JsonMiddleware,
 	}
 
-	middlewareChain := middleware.NewChain(middlewares...)
+	chain := middleware.NewChain(middlewares...)
 
 	post.RegisterRoutes(r)
 	secret.RegisterRoutes(r)
 
-	http.ListenAndServe(":3000", middlewareChain.Apply(r))
+	http.ListenAndServe(":3000", chain.Apply(r))
 }
