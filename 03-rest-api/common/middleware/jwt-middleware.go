@@ -9,7 +9,7 @@ import (
 func JwtMiddleware(l *log.Logger, s jwt.JwtService) Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			l.Println("Jwt verification TODO")
+			l.Println("JWT middleware handles request")
 
 			_, err := s.Verify("Header")
 
