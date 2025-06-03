@@ -3,13 +3,18 @@ package secret
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 )
 
-type SecretHandlers struct{}
+type SecretHandlers struct {
+	Logger *log.Logger
+}
 
-func NewSecretHandlers() *SecretHandlers {
-	return &SecretHandlers{}
+func NewSecretHandlers(l *log.Logger) *SecretHandlers {
+	return &SecretHandlers{
+		Logger: l,
+	}
 }
 
 func (h *SecretHandlers) Index(w http.ResponseWriter, r *http.Request) {

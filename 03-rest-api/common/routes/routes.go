@@ -1,12 +1,11 @@
 package routes
 
 import (
+	"log"
 	"net/http"
 	"rest-api/common/middleware"
 	"rest-api/features/post"
 	"rest-api/features/secret"
-
-	"github.com/go-playground/validator/v10"
 )
 
 type Handlers struct {
@@ -14,13 +13,14 @@ type Handlers struct {
 	Secret *secret.SecretHandlers
 }
 
-func SetupRoutes(r *http.ServeMux, h Handlers) {
-	r.HandleFunc("GET /posts", h.Post.Index)
-	r.HandleFunc("GET /posts/{id}", h.Post.Show)
-	r.HandleFunc("POST /posts", h.Post.Create)
-	r.HandleFunc("DELETE /posts/{id}", h.Post.Delete)
+func SetupRoutes(mux *http.ServeMux, h Handlers, l *log.Logger) {
+	mux.HandleFunc("GET /posts", h.Post.Index)
+	mux.HandleFunc("GET /posts/{id}", h.Post.Show)
+	mux.HandleFunc("POST /posts", h.Post.Create)
+	mux.HandleFunc("DELETE /posts/{id}", h.Post.Delete)
 
-	jwtMiddleware := middleware.NewChain(middleware.JwtMiddleware)
-	r.HandleFunc("GET /secrets", jwtMiddleware.Handle(h.Secret.Index))
-	r.HandleFunc("GET /secrets/{wildcard}", jwtMiddleware.Handle(h.Secret.Show))
+	jwtMiddleware := middleware.JwtMiddleware(l)
+	jwtMiddlewareChain := middleware.NewChain(jwtMiddleware)
+	mux.HandleFunc("GET /secrets", jwtMiddlewareChain.Handle(h.Secret.Index))
+	mux.HandleFunc("GET /secrets/{wildcard}", jwtMiddlewareChain.Handle(h.Secret.Show))
 }

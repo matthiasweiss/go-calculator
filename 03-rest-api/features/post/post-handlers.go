@@ -2,6 +2,7 @@ package post
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"rest-api/common/validation"
 	"strconv"
@@ -12,12 +13,14 @@ import (
 type PostHandlers struct {
 	Repository *PostRepository
 	Validator  *validator.Validate
+	Logger     *log.Logger
 }
 
-func NewPostHandlers(r *PostRepository, v *validator.Validate) *PostHandlers {
+func NewPostHandlers(r *PostRepository, v *validator.Validate, l *log.Logger) *PostHandlers {
 	return &PostHandlers{
 		Repository: r,
 		Validator:  v,
+		Logger:     l,
 	}
 }
 

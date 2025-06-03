@@ -24,6 +24,7 @@ func run(ctx context.Context, args []string, getenv func(string) string, stdout,
 	mux := http.NewServeMux()
 
 	v := validator.New(validator.WithRequiredStructEnabled())
+	l := log.New(stdout, "LOG: ", log.LstdFlags|log.Lshortfile)
 
 	postHandlers := post.NewPostHandlers(post.NewPostRepository(), v)
 	secretHandlers := secret.NewSecretHandlers()
@@ -31,6 +32,7 @@ func run(ctx context.Context, args []string, getenv func(string) string, stdout,
 	handlers := routes.Handlers{
 		Post:   postHandlers,
 		Secret: secretHandlers,
+		Logger: l,
 	}
 
 	routes.SetupRoutes(mux, handlers)
