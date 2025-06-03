@@ -8,6 +8,10 @@ import (
 
 type SecretHandlers struct{}
 
+func NewSecretHandlers() *SecretHandlers {
+	return &SecretHandlers{}
+}
+
 func (h *SecretHandlers) Index(w http.ResponseWriter, r *http.Request) {
 	secret := secret{
 		Message: "Hello there",

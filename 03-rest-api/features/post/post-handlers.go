@@ -14,6 +14,13 @@ type PostHandlers struct {
 	Validator  *validator.Validate
 }
 
+func NewPostHandlers(r *PostRepository, v *validator.Validate) *PostHandlers {
+	return &PostHandlers{
+		Repository: r,
+		Validator:  v,
+	}
+}
+
 func (h *PostHandlers) Index(w http.ResponseWriter, r *http.Request) {
 	posts := h.Repository.Index()
 
