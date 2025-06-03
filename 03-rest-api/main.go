@@ -63,7 +63,9 @@ func run(ctx context.Context, args []string, getenv func(string) string, stdout,
 	go func() {
 		l.Printf("Server starting on http://localhost%s", srv.Addr)
 
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		err := srv.ListenAndServe()
+
+		if err != nil && err != http.ErrServerClosed {
 			fmt.Fprintf(stderr, "Server failed: %v\n", err)
 		}
 	}()
@@ -75,7 +77,9 @@ func run(ctx context.Context, args []string, getenv func(string) string, stdout,
 	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer shutdownCancel()
 
-	if err := srv.Shutdown(shutdownCtx); err != nil {
+	err := srv.Shutdown(shutdownCtx)
+
+	if err != nil {
 		fmt.Fprintf(stderr, "Server forced to shutdown: %v\n", err)
 		return err
 	}
@@ -85,11 +89,12 @@ func run(ctx context.Context, args []string, getenv func(string) string, stdout,
 }
 
 func main() {
-	appCtx := context.Background()
+	err := run(context.Background(), os.Args, os.Getenv, os.Stdout, os.Stderr)
 
-	if err := run(appCtx, os.Args, os.Getenv, os.Stdout, os.Stderr); err != nil {
+	if err != nil {
 		fmt.Fprintf(os.Stderr, "Application exited with error: %s\n", err)
 		os.Exit(1)
 	}
+
 	os.Exit(0)
 }
