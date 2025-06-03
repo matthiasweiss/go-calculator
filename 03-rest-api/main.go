@@ -26,22 +26,20 @@ func run(ctx context.Context, args []string, getenv func(string) string, stdout,
 	v := validator.New(validator.WithRequiredStructEnabled())
 	l := log.New(stdout, "LOG: ", log.LstdFlags|log.Lshortfile)
 
-	postHandlers := post.NewPostHandlers(post.NewPostRepository(), v)
-	secretHandlers := secret.NewSecretHandlers()
+	postHandlers := post.NewPostHandlers(post.NewPostRepository(), v, l)
+	secretHandlers := secret.NewSecretHandlers(l)
 
 	handlers := routes.Handlers{
 		Post:   postHandlers,
 		Secret: secretHandlers,
-		Logger: l,
 	}
 
-	routes.SetupRoutes(mux, handlers)
+	routes.SetupRoutes(mux, handlers, l)
 
 	middlewares := []middleware.Middleware{
 		middleware.LogMiddleware,
 		middleware.JsonMiddleware,
 	}
-
 	globalMiddleware := middleware.NewChain(middlewares...)
 
 	srv := &http.Server{
@@ -50,7 +48,7 @@ func run(ctx context.Context, args []string, getenv func(string) string, stdout,
 	}
 
 	go func() {
-		log.Printf("Server starting on http://localhost%s", srv.Addr)
+		l.Printf("Server starting on http://localhost%s", srv.Addr)
 
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			fmt.Fprintf(stderr, "Server failed: %v\n", err)
@@ -59,7 +57,7 @@ func run(ctx context.Context, args []string, getenv func(string) string, stdout,
 
 	<-ctx.Done()
 
-	log.Println("Received shutdown signal. Preparing to shut down gracefully...")
+	l.Println("Received shutdown signal. Preparing to shut down gracefully...")
 
 	shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer shutdownCancel()
@@ -69,7 +67,7 @@ func run(ctx context.Context, args []string, getenv func(string) string, stdout,
 		return err
 	}
 
-	log.Println("Server gracefully stopped. Goodbye!")
+	l.Println("Server gracefully stopped. Goodbye!")
 	return nil
 }
 

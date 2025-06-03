@@ -5,7 +5,7 @@ import (
 )
 
 type JwtService interface {
-	verify(jwt string) (map[string]interface{}, error)
+	verify(jwt string) (map[string]string{}, error)
 }
 
 type jwtService struct {
@@ -13,9 +13,9 @@ type jwtService struct {
 	logger *log.Logger
 }
 
-func (s *jwtService) verify(jwt string) (map[string]interface{}, error) {
-	s.logger.Println("JWT verification done")
-	return map[string]interface{}{}, nil
+func (s *jwtService) verify(jwt string) (map[string]string{}, error) {
+	s.logger.Println("JWT verification")
+	return map[string]string{}{}, nil
 }
 
 func NewJwtService(secret string, logger *log.Logger) JwtService {
