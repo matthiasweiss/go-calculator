@@ -3,6 +3,7 @@ package routes
 import (
 	"log"
 	"net/http"
+	"rest-api/common/jwt"
 	"rest-api/common/middleware"
 	"rest-api/features/post"
 	"rest-api/features/secret"
@@ -13,13 +14,13 @@ type Handlers struct {
 	Secret *secret.SecretHandlers
 }
 
-func SetupRoutes(mux *http.ServeMux, h Handlers, l *log.Logger) {
+func SetupRoutes(mux *http.ServeMux, h Handlers, l *log.Logger, s jwt.JwtService) {
 	mux.HandleFunc("GET /posts", h.Post.Index)
 	mux.HandleFunc("GET /posts/{id}", h.Post.Show)
 	mux.HandleFunc("POST /posts", h.Post.Create)
 	mux.HandleFunc("DELETE /posts/{id}", h.Post.Delete)
 
-	jwtMiddleware := middleware.JwtMiddleware(l)
+	jwtMiddleware := middleware.JwtMiddleware(l, s)
 	jwtMiddlewareChain := middleware.NewChain(jwtMiddleware)
 	mux.HandleFunc("GET /secrets", jwtMiddlewareChain.Handle(h.Secret.Index))
 	mux.HandleFunc("GET /secrets/{wildcard}", jwtMiddlewareChain.Handle(h.Secret.Show))

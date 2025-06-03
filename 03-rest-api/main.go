@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"rest-api/common/jwt"
 	"rest-api/common/middleware"
 	"rest-api/common/routes"
 	"rest-api/features/post"
@@ -17,16 +18,15 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func run(ctx context.Context, args []string, getenv func(string) string, stdout, stderr io.Writer) error {
-	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt, os.Kill)
-	defer cancel()
-
+func NewServer(l *log.Logger) http.Handler {
 	mux := http.NewServeMux()
 
 	v := validator.New(validator.WithRequiredStructEnabled())
-	l := log.New(stdout, "LOG: ", log.LstdFlags|log.Lshortfile)
 
 	postHandlers := post.NewPostHandlers(post.NewPostRepository(), v, l)
+
+	jwtSecret := "willbefixedlaterignorefornow"
+	jwtService := jwt.NewJwtService(jwtSecret, l)
 	secretHandlers := secret.NewSecretHandlers(l)
 
 	handlers := routes.Handlers{
@@ -34,17 +34,30 @@ func run(ctx context.Context, args []string, getenv func(string) string, stdout,
 		Secret: secretHandlers,
 	}
 
-	routes.SetupRoutes(mux, handlers, l)
+	routes.SetupRoutes(mux, handlers, l, jwtService)
 
+	logMiddleware := middleware.LogMiddleware(l)
 	middlewares := []middleware.Middleware{
-		middleware.LogMiddleware,
+		logMiddleware,
 		middleware.JsonMiddleware,
 	}
+
 	globalMiddleware := middleware.NewChain(middlewares...)
+
+	return globalMiddleware.Apply(mux)
+}
+
+func run(ctx context.Context, args []string, getenv func(string) string, stdout, stderr io.Writer) error {
+	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt, os.Kill)
+	defer cancel()
+
+	l := log.New(stdout, "LOG: ", log.LstdFlags|log.Lshortfile)
+
+	mux := NewServer(l)
 
 	srv := &http.Server{
 		Addr:    ":3000",
-		Handler: globalMiddleware.Apply(mux),
+		Handler: mux,
 	}
 
 	go func() {
