@@ -22,5 +22,7 @@ func NewJwtService(secret string, logger *log.Logger) JwtService {
 
 func (s *jwtService) Verify(jwt string) (map[string]string, error) {
 	s.logger.Println("JWT service verifies token")
+
+	// return map[string]string{}, fmt.Errorf("Error verifying JWT")
 	return map[string]string{}, nil
 }
